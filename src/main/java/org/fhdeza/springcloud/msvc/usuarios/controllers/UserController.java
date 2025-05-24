@@ -34,14 +34,7 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<?> createUser(@Valid @RequestBody CreateUserDto createUserDto, BindingResult result) {
-        if (result.hasErrors()) {
-            Map<String, String> errors = new HashMap<>();
-            result.getFieldErrors().forEach(err ->
-                    errors.put(err.getField(), err.getDefaultMessage())
-            );
-            return ResponseEntity.badRequest().body(errors);
-        }
+    public ResponseEntity<?> createUser(@Valid @RequestBody CreateUserDto createUserDto) {
         User userCreated = service.save(createUserDto);
         ApiResponse<User> response = new ApiResponse<>(
                 HttpStatus.CREATED.value(),
