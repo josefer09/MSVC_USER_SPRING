@@ -3,6 +3,8 @@ package org.fhdeza.springcloud.msvc.usuarios.services;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.fhdeza.springcloud.msvc.usuarios.dtos.CreateUserDto;
+import org.fhdeza.springcloud.msvc.usuarios.dtos.UpdateUserDto;
+import org.fhdeza.springcloud.msvc.usuarios.exceptions.ConflictException;
 import org.fhdeza.springcloud.msvc.usuarios.exceptions.CustomHttpException;
 import org.fhdeza.springcloud.msvc.usuarios.exceptions.NotFoundException;
 import org.fhdeza.springcloud.msvc.usuarios.models.entity.User;
@@ -38,15 +40,50 @@ public class UserServiceImpl implements UserService{
         return userFound;
     }
 
+//    @Override
+//    @Transactional
+//    public User save(CreateUserDto createUserDto) {
+//        Optional<User> userExist = userRepository.findByEmail(createUserDto.getEmail());
+//        if (userExist.isPresent()) throw new CustomHttpException("User already exist", HttpStatus.CONFLICT);
+//        User user = new User();
+//        user.setName(createUserDto.getName());
+//        user.setEmail(createUserDto.getEmail());
+//        user.setPassword(createUserDto.getPassword());
+//        return userRepository.save(user);
+//    }
+
     @Override
-    @Transactional
-    public User save(CreateUserDto createUserDto) {
+    public User createUser(CreateUserDto createUserDto) {
         Optional<User> userExist = userRepository.findByEmail(createUserDto.getEmail());
-        if (userExist.isPresent()) throw new CustomHttpException("User already exist", HttpStatus.CONFLICT);
+        if (userExist.isPresent()) throw new ConflictException("User with email: " + createUserDto.getEmail() +"already exist.", HttpStatus.CONFLICT);
+
         User user = new User();
         user.setName(createUserDto.getName());
         user.setEmail(createUserDto.getEmail());
         user.setPassword(createUserDto.getPassword());
+        user.setAge(createUserDto.getAge());
+        return userRepository.save(user);
+    }
+
+    @Override
+    public User updateUser(UpdateUserDto updateUserDto, UUID id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("User with id: " + id + " not found."));
+
+        if (updateUserDto.getEmail() != null) {
+            Optional<User> emailTaken = userRepository.findByEmail(updateUserDto.getEmail());
+            if (emailTaken.isPresent() && !emailTaken.get().getId().equals(id)) throw new CustomHttpException("Email is already taken by another user", HttpStatus.CONFLICT);
+            user.setEmail(updateUserDto.getEmail());
+        }
+
+        if (updateUserDto.getName() != null && !updateUserDto.getName().isBlank()) {
+            user.setName(updateUserDto.getName());
+        }
+
+        if (updateUserDto.getAge() != null) {
+            user.setAge(updateUserDto.getAge());
+        }
+
         return userRepository.save(user);
     }
 

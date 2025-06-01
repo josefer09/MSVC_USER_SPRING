@@ -1,9 +1,6 @@
 package org.fhdeza.springcloud.msvc.usuarios.dtos;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 
 @Data
@@ -22,4 +19,8 @@ public class CreateUserDto {
             message = "The password must have a Uppercase, lowercase letter and a number"
     )
     private String password;
+
+    @NotNull(message = "Age is required.")
+    @Min(value = 1, message = "Age must be greater than to 0.")
+    private Long age;
 }

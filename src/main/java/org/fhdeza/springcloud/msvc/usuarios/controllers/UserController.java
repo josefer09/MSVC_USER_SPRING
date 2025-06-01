@@ -2,6 +2,7 @@ package org.fhdeza.springcloud.msvc.usuarios.controllers;
 
 import jakarta.validation.Valid;
 import org.fhdeza.springcloud.msvc.usuarios.dtos.CreateUserDto;
+import org.fhdeza.springcloud.msvc.usuarios.dtos.UpdateUserDto;
 import org.fhdeza.springcloud.msvc.usuarios.models.entity.ApiResponse;
 import org.fhdeza.springcloud.msvc.usuarios.models.entity.User;
 import org.fhdeza.springcloud.msvc.usuarios.services.UserService;
@@ -35,7 +36,7 @@ public class UserController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<?> createUser(@Valid @RequestBody CreateUserDto createUserDto) {
-        User userCreated = service.save(createUserDto);
+        User userCreated = service.createUser(createUserDto);
         ApiResponse<User> response = new ApiResponse<>(
                 HttpStatus.CREATED.value(),
                 "User created successfully",
@@ -44,17 +45,11 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-//    @PutMapping("/{id}")
-//    public ResponseEntity<?> updateUser(@RequestBody User user, @PathVariable UUID id) {
-//        Optional<User> oUser = service.findById(id);
-//        if (oUser.isPresent()) {
-//            User userDB = oUser.get();
-//            userDB.setEmail(user.getEmail());
-//            userDB.setName(user.getName());
-//            return ResponseEntity.ok(service.save(userDB));
-//        }
-//        return ResponseEntity.notFound().build();
-//    }
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateUser(@RequestBody UpdateUserDto updateUserDto, @PathVariable UUID id) {
+        User update = service.updateUser(updateUserDto, id);
+        return ResponseEntity.ok(update);
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable UUID id) {
