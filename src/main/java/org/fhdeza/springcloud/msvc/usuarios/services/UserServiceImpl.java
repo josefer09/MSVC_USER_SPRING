@@ -53,9 +53,16 @@ public class UserServiceImpl implements UserService{
 //    }
 
     @Override
+    @Transactional
     public User createUser(CreateUserDto createUserDto) {
+        /*
+         * La diferencia entre findByEmail y existsByEmail es:
+         * findByEmail busca y carga todo el registro del campo si fue encontrado
+         * existsByEmail buscar si existe un registro con el campo email proporcionado, de ser asi solo devuelve un true, pero no carga el registro
         Optional<User> userExist = userRepository.findByEmail(createUserDto.getEmail());
-        if (userExist.isPresent()) throw new ConflictException("User with email: " + createUserDto.getEmail() +"already exist.", HttpStatus.CONFLICT);
+        if (userExist.isPresent()) throw new ConflictException("User with email: " + createUserDto.getEmail() +" already exist.", HttpStatus.CONFLICT);
+         **/
+        if (userRepository.existsByEmail(createUserDto.getEmail())) throw new ConflictException("User with email: " + createUserDto.getEmail() +" already exist.", HttpStatus.CONFLICT);
 
         User user = new User();
         user.setName(createUserDto.getName());
@@ -66,6 +73,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    @Transactional
     public User updateUser(UpdateUserDto updateUserDto, UUID id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("User with id: " + id + " not found."));

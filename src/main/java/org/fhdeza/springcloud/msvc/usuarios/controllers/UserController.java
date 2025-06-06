@@ -1,6 +1,7 @@
 package org.fhdeza.springcloud.msvc.usuarios.controllers;
 
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import org.fhdeza.springcloud.msvc.usuarios.dtos.CreateUserDto;
 import org.fhdeza.springcloud.msvc.usuarios.dtos.UpdateUserDto;
 import org.fhdeza.springcloud.msvc.usuarios.models.entity.ApiResponse;
@@ -14,11 +15,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
+@AllArgsConstructor
 @RestController
 public class UserController {
 
-    @Autowired
-    private UserService service;
+    private final UserService service;
 
     @GetMapping
     public List<User> getAll() {
