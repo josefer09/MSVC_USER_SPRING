@@ -1,5 +1,6 @@
 package org.fhdeza.springcloud.msvc.usuarios.exceptions;
 
+import lombok.extern.slf4j.Slf4j;
 import org.fhdeza.springcloud.msvc.usuarios.models.entity.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -23,6 +25,7 @@ public class GlobalExceptionHandler {
             errors.put(error.getField(), error.getDefaultMessage());
         }
 
+        log.error("Validation failed", ex);
         ApiResponse<?> response = new ApiResponse<>(
                 HttpStatus.BAD_REQUEST.value(),
                 "Validation failed",

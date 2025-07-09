@@ -71,7 +71,6 @@ public class UserServiceImpl implements UserService{
         user.setAge(createUserDto.getAge());
         return userRepository.save(user);
     }
-
     @Override
     @Transactional
     public User updateUser(UpdateUserDto updateUserDto, UUID id) {

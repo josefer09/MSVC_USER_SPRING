@@ -43,7 +43,7 @@ public class UserController {
                 "User created successfully",
                 userCreated
         );
-        return ResponseEntity.ok(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping("/{id}")
